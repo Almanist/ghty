@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>merrtdeen suleeeeeyeeeeee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Caveat', cursive;
+            perspective: 1000px;
+            touch-action: manipulation;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            aspect-ratio: 1/0.6;
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #e74c3c;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            touch-action: manipulation;
+        }
+
+        .envelope:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 50% solid transparent;
+            border-right: 50% solid transparent;
+            border-top: 30% solid #c0392b;
+            transform-origin: top;
+            transform: rotateX(0deg);
+            transition: all 0.8s ease;
+            z-index: 5;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .envelope.open:before {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .envelope.open {
+            transform: translateY(-15%) rotateX(10deg);
+            height: auto;
+            aspect-ratio: 1/0.9;
+        }
+
+        .letter {
+            position: absolute;
+            width: 90%;
+            height: 85%;
+            background: #fff9e6;
+            margin: 5%;
+            padding: 5%;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 1s ease 0.3s;
+            overflow: hidden;
+            font-size: clamp(18px, 4vw, 28px);
+            line-height: 1.8;
+            color: #333;
+            font-weight: bold;
+            border-radius: 3px;
+            background-image: repeating-linear-gradient(#fff9e6, #fff9e6 28px, #94acd4 29px, #94acd4 29px, #fff9e6 30px);
+            background-attachment: local;
+            touch-action: pan-y;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .envelope.open .letter {
+            transform: translateY(-10%);
+            opacity: 1;
+            height: 80%;
+        }
+
+        .poem-line {
+            display: block;
+            margin-bottom: 2vh;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+            text-shadow: 0 0 1px rgba(0,0,0,0.1);
+        }
+
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 5vh;
+            font-style: italic;
+            font-size: clamp(16px, 3.5vw, 26px);
+            opacity: 0;
+            transition: opacity 1.2s ease 4.5s;
+            color: #e74c3c;
+        }
+
+        .envelope.open .signature {
+            opacity: 1;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #e74c3c;
+            transform: rotate(45deg) scale(0);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .heart:before, .heart:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+        }
+
+        .heart:before {
+            top: -10px;
+            left: 0;
+        }
+
+        .heart:after {
+            top: 0;
+            left: -10px;
+        }
+
+        .ink-blot {
+            position: absolute;
+            background: radial-gradient(circle, rgba(46,52,64,0.2) 0%, rgba(46,52,64,0) 70%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .stamp {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 15%;
+            max-width: 60px;
+            aspect-ratio: 0.75;
+            background: #f1c40f;
+            border: 2px dashed #e67e22;
+            transform: rotate(10deg);
+            opacity: 0.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(8px, 2vw, 12px);
+            color: #e74c3c;
+            font-weight: bold;
+            z-index: 6;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: -8%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5% solid transparent;
+            border-right: 5% solid transparent;
+            border-bottom: 10% solid #c0392b;
+            z-index: 2;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .envelope.open .envelope-flap {
+            opacity: 1;
+            animation: flapWave 2s infinite;
+        }
+
+        @keyframes flapWave {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(5deg); }
+        }
+
+        .page-marks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .page-mark {
+            position: absolute;
+            background: rgba(0,0,0,0.05);
+            border-radius: 50%;
+        }
+
+        .touch-instruction {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+            opacity: 0;
+            transition: opacity 1s ease 2s;
+        }
+
+        .envelope.open ~ .touch-instruction {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 500px) {
+            .envelope:before {
+                border-top-width: 25%;
+            }
+            
+            .envelope.open {
+                transform: translateY(-10%) rotateX(10deg);
+            }
+            
+            .letter {
+                padding: 8%;
+                font-size: clamp(16px, 5vw, 22px);
+            }
+            
+            .stamp {
+                top: 5px;
+                right: 5px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .envelope-wrapper {
+                max-width: 400px;
+            }
+            
+            .letter {
+                font-size: clamp(14px, 4vw, 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope-wrapper" id="envelope-wrapper">
+            <div class="envelope" id="envelope">
+                <div class="envelope-flap"></div>
+                <div class="letter" id="letter">
+                    <div class="page-marks" id="page-marks"></div>
+                    <span class="poem-line" id="line1">Şule</span>
+                    <span class="poem-line" id="line2"></span>
+                    <span class="poem-line" id="line3">Bir adım sen</span>
+                    <span class="poem-line" id="line4">Bir ömür ben.</span>
+                    <span class="poem-line" id="line5"></span>
+                    <span class="poem-line" id="line6">Gözlerin değdi</span>
+                    <span class="poem-line" id="line7">Kalbim yeniden.</span>
+                    <span class="poem-line" id="line8"></span>
+                    <span class="poem-line" id="line9">Bir gülüşün yeter</span>
+                    <span class="poem-line" id="line10">Susar her sitem.</span>
+                    <span class="poem-line" id="line11"></span>
+                    <span class="poem-line" id="line12">Senle başlar</span>
+                    <span class="poem-line" id="line13">Ve</span>
+                    <span class="poem-line" id="line14">Senle biter bu şiir.</span>
+                    <span class="poem-line" id="line15">@N4rk0t1ks</span>
+                    <div class="signature">Sevgilerimle Mert</div>
+                </div>
+                <div class="stamp">ÖZEL<br>POSTA</div>
+            </div>
+        </div>
+        <div class="touch-instruction">Mektubu kapatmak için dokun</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const envelope = document.getElementById('envelope');
+            const letter = document.getElementById('letter');
+            const poemLines = document.querySelectorAll('.poem-line');
+            const pageMarks = document.getElementById('page-marks');
+            const envelopeWrapper = document.getElementById('envelope-wrapper');
+            
+            // Mobile detection
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Create page marks
+            for (let i = 0; i < 20; i++) {
+                const mark = document.createElement('div');
+                mark.className = 'page-mark';
+                const size = Math.random() * 10 + 5;
+                mark.style.width = size + 'px';
+                mark.style.height = size + 'px';
+                mark.style.left = Math.random() * 100 + '%';
+                mark.style.top = Math.random() * 100 + '%';
+                mark.style.opacity = Math.random() * 0.2;
+                pageMarks.appendChild(mark);
+            }
+            
+            // Open the envelope automatically
+            setTimeout(() => {
+                envelope.classList.add('open');
+                
+                // Add subtle shake to envelope
+                envelopeWrapper.style.animation = 'envelopeShake 5s infinite';
+            }, 1000);
+            
+            // Animate poem lines one by one
+            poemLines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.classList.add('visible');
+                    
+                    // Add ink blot randomly
+                    if (Math.random() > 0.8) {
+                        createInkBlot(line);
+                    }
+                }, 1500 + (index * 600));
+            });
+            
+            // Handle touch events
+            let touchStartTime = 0;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            envelope.addEventListener('touchstart', function(e) {
+                touchStartTime = Date.now();
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                
+                // Create heart on long press
+                setTimeout(() => {
+                    if (Date.now() - touchStartTime > 800) {
+                        const touch = e.touches[0];
+                        createHeart(touch.clientX, touch.clientY);
+                    }
+                }, 1000);
+            }, {passive: true});
+            
+            envelope.addEventListener('touchend', function(e) {
+                const touchEndTime = Date.now();
+                const duration = touchEndTime - touchStartTime;
+                
+                // Quick tap toggles envelope
+                if (duration < 300) {
+                    envelope.classList.toggle('open');
+                }
+            }, {passive: true});
+            
+            envelope.addEventListener('touchmove', function(e) {
+                const touch = e.touches[0];
+                const xDiff = touch.clientX - touchStartX;
+                const yDiff = touch.clientY - touchStartY;
+                
+                // Parallax effect
+                const x = touch.clientX / window.innerWidth;
+                const y = touch.clientY / window.innerHeight;
+                
+                envelopeWrapper.style.transform = `rotateX(${5 - y * 10}deg) rotateY(${x * 10 - 5}deg)`;
+                
+                // Create hearts while moving finger quickly
+                if (Math.sqrt(xDiff*xDiff + yDiff*yDiff) > 50 && Math.random() > 0.9) {
+                    createHeart(touch.clientX, touch.clientY);
+                }
+            }, {passive: true});
+            
+            // Click handler for desktop
+            envelope.addEventListener('click', function() {
+                if (!isMobile) {
+                    envelope.classList.toggle('open');
+                }
+            });
+            
+            function createHeart(x, y) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                
+                heart.style.left = x + 'px';
+                heart.style.top = y + 'px';
+                heart.style.opacity = '0';
+                heart.style.transform = 'rotate(45deg) scale(0)';
+                heart.style.transition = 'all 1s ease';
+                
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.style.opacity = '0.7';
+                    heart.style.transform = 'rotate(45deg) scale(' + (0.5 + Math.random() * 0.7) + ')';
+                }, 100);
+                
+                setTimeout(() => {
+                    heart.style.opacity = '0';
+                    setTimeout(() => {
+                        if (heart.parentNode) {
+                            document.body.removeChild(heart);
+                        }
+                    }, 1000);
+                }, 2000 + Math.random() * 1000);
+            }
+            
+            function createInkBlot(nearElement) {
+                const blot = document.createElement('div');
+                blot.className = 'ink-blot';
+                
+                const rect = nearElement.getBoundingClientRect();
+                const x = rect.left + Math.random() * rect.width;
+                const y = rect.top + Math.random() * rect.height;
+                const size = 30 + Math.random() * 70;
+                
+                blot.style.left = x + 'px';
+                blot.style.top = y + 'px';
+                blot.style.width = size + 'px';
+                blot.style.height = size + 'px';
+                blot.style.opacity = '0';
+                blot.style.transition = 'opacity 1s ease';
+                
+                document.body.appendChild(blot);
+                
+                setTimeout(() => {
+                    blot.style.opacity = '0.3';
+                }, 100);
+                
+                setTimeout(() => {
+                    blot.style.opacity = '0';
+                    setTimeout(() => {
+                        if (blot.parentNode) {
+                            document.body.removeChild(blot);
+                        }
+                    }, 1000);
+                }, 3000);
+            }
+            
+            // Add CSS keyframes dynamically for envelope shake
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes envelopeShake {
+                    0%, 100% { transform: translateY(0) rotate(0deg); }
+                    25% { transform: translateY(-2px) rotate(0.5deg); }
+                    75% { transform: translateY(2px) rotate(-0.5deg); }
+                }
+                
+                @keyframes letterFloat {
+                    0%, 100% { transform: translateY(-10%) rotate(0deg); }
+                    50% { transform: translateY(-12%) rotate(0.5deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Add more complex animations after poem is fully visible
+            setTimeout(() => {
+                // Create a burst of hearts
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const rect = letter.getBoundingClientRect();
+                        const x = rect.left + Math.random() * rect.width;
+                        const y = rect.top + Math.random() * rect.height;
+                        createHeart(x, y);
+                    }, i * 150);
+                }
+                
+                // Add floating effect to letter
+                letter.style.animation = 'letterFloat 4s ease-in-out infinite';
+            }, 1500 + (poemLines.length * 600));
+            
+            // Handle device orientation for mobile
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', function(e) {
+                    const beta = e.beta ? Math.min(Math.max(e.beta, -30), 30) : 0;
+                    const gamma = e.gamma ? Math.min(Math.max(e.gamma, -30), 30) : 0;
+                    
+                    envelopeWrapper.style.transform = `rotateX(${beta * 0.5}deg) rotateY(${gamma * 0.5}deg)`;
+                }, true);
+            }
+            
+            // Prevent zooming on mobile
+            document.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            });
+            
+            // Adjust for screen size changes
+            function adjustForScreenSize() {
+                const scale = Math.min(window.innerWidth / 500, window.innerHeight / 700);
+                envelopeWrapper.style.transform = `scale(${scale})`;
+            }
+            
+            window.addEventListener('resize', adjustForScreenSize);
+            adjustForScreenSize();
+        });
+    </script>
+</body>
+</html>
